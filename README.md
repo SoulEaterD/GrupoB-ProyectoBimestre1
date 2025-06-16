@@ -16,36 +16,41 @@
   </a>
 </p>
 
-# Simulador de Venta de Entradas: Concierto Don Medardo y sus Players
+***
+### **Integrantes**
+
+<ul>
+  <li>Carrera Fernando</li>
+  <li>Cevallos Guillermo</li>
+  <li>Dávila Gissel</li>
+  <li>Rodríguez Ariel</li>
+</ul>
+
+***
+## **Problema**
+
+<p>
+  Desarrollar dos versiones de un programa en C que procese un conjunto de transacciones simuladas (pueden representar consultas a una base de datos, procesamiento de archivos, cálculos, etc.).
+  Ambas versiones deben atender los mismo grupos de transacciones.
+</p>
+
+***
+
+## Simulador de Venta de Entradas: Concierto Don Medardo y sus Players
 
 Este proyecto implementa un simulador concurrente de venta de entradas para un concierto, utilizando dos enfoques diferentes:
 
 - Versión con **procesos** (fork) y memoria compartida (mmap)
 - Versión con **hilos** (pthread) y mutexes
 
-## Contenido del Repositorio
+### Contenido del Repositorio
 - README.md 
 
 - hilos.c  
 
 - procesosMMAP.c 
 
-## Objetivo
-Simular la venta masiva de entradas para un concierto mediante programación en lenguaje C, utilizando mecanismos de sincronización con el fin de evitar condiciones de carrera.
-
-## Zonas de Entradas
-
-El concierto dispone de cinco tipos de entradas, con las siguientes cantidades iniciales:
-
-- Tribuna: 100000
-- Golden Box: 100000
-- VIP: 50000
-- Top Box: 30000
-- Players Box: 20000
-
-Total: 300000 entradas
-
-## Versión con Hilos (hilos.c)
+### Versión con Hilos (hilos.c)
 
 En esta versión se utilizan cinco hilos (pthread) que representan cinco cajeros. Cada hilo se encarga de procesar una parte de las transacciones.
 
@@ -53,7 +58,7 @@ En esta versión se utilizan cinco hilos (pthread) que representan cinco cajeros
 - Estructura compartida: Una estructura común en memoria local.
 - Ventaja: Mayor eficiencia por no requerir la creación de procesos.
 
-## Versión con Procesos (procesosMMAP.c)
+### Versión con Procesos (procesosMMAP.c)
 
 En esta versión se utilizan cinco procesos hijos creados con fork(). Todos los procesos comparten una estructura de entradas mediante mmap.
 
@@ -61,9 +66,11 @@ En esta versión se utilizan cinco procesos hijos creados con fork(). Todos los 
 - Estructura compartida: Memoria compartida mediante mmap.
 - Ventaja: Aislamiento entre procesos y simulación de entornos independientes.
 
-## Medición de Tiempo
+### Medición de Tiempo
 
 Ambas versiones emplean la función clock_gettime() con CLOCK_MONOTONIC para calcular el tiempo total que toma realizar la venta completa de entradas.
+
+***
 
 ## Compilación y Ejecución
 
