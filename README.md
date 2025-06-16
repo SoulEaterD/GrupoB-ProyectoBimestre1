@@ -3,6 +3,7 @@
     <strong>GRUPO B - PROYECTO BIMESTRE 1: Ejecución de múltiples tareas con procesos y con hilos.</strong>
   </h1>
 </center>
+
 <p align="center">
   <a href="https://www.epn.edu.ec/">
     <img src="https://img.shields.io/badge/Escuela%20Polit%C3%A9cnica%20Nacional-blue?style=for-the-badge">
@@ -14,3 +15,65 @@
     <img src="https://img.shields.io/badge/Software-darkgreen?style=for-the-badge">
   </a>
 </p>
+
+# Simulador de Venta de Entradas: Concierto Don Medardo y sus Players
+
+Este proyecto implementa un simulador concurrente de venta de entradas para un concierto, utilizando dos enfoques diferentes:
+
+- Versión con **procesos** (fork) y memoria compartida (mmap)
+- Versión con **hilos** (pthread) y mutexes
+
+## Contenido del Repositorio
+- README.md 
+
+- hilos.c  
+
+- procesosMMAP.c 
+
+## Objetivo
+Simular la venta masiva de entradas para un concierto mediante programación en lenguaje C, utilizando mecanismos de sincronización con el fin de evitar condiciones de carrera.
+
+## Zonas de Entradas
+
+El concierto dispone de cinco tipos de entradas, con las siguientes cantidades iniciales:
+
+- Tribuna: 100000
+- Golden Box: 100000
+- VIP: 50000
+- Top Box: 30000
+- Players Box: 20000
+
+Total: 300000 entradas
+
+## Versión con Hilos (hilos.c)
+
+En esta versión se utilizan cinco hilos (pthread) que representan cinco cajeros. Cada hilo se encarga de procesar una parte de las transacciones.
+
+- Sincronización: Se emplean pthread_mutex_t para asegurar el acceso exclusivo a cada zona de entradas.
+- Estructura compartida: Una estructura común en memoria local.
+- Ventaja: Mayor eficiencia por no requerir la creación de procesos.
+
+## Versión con Procesos (procesosMMAP.c)
+
+En esta versión se utilizan cinco procesos hijos creados con fork(). Todos los procesos comparten una estructura de entradas mediante mmap.
+
+- Sincronización: Se utiliza un semáforo (sem_t) para asegurar el acceso mutuo a las zonas.
+- Estructura compartida: Memoria compartida mediante mmap.
+- Ventaja: Aislamiento entre procesos y simulación de entornos independientes.
+
+## Medición de Tiempo
+
+Ambas versiones emplean la función clock_gettime() con CLOCK_MONOTONIC para calcular el tiempo total que toma realizar la venta completa de entradas.
+
+## Compilación y Ejecución
+
+### Versión con Hilos
+gcc -pthread hilos.c -o hilos 
+
+./hilos
+
+### Versión con Procesos
+gcc -pthread procesosMMAP.c -o procesos 
+
+./procesos
+
