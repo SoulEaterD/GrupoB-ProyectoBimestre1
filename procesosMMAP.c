@@ -55,9 +55,10 @@ void procesarTransaccion(Entradas *e, int tipo) {
 }
 
 int main() {
-	Entradas *e = mmap(NULL, sizeof(Entradas), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+	// se reserva una region de memoria compartida para la estructura de entradas
+	Entradas *e = mmap(NULL, sizeof(Entradas), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0); // se puede leer y escribir, memoria compartida anonima, no se asocia a ningun archivo
 	if (e == MAP_FAILED) {
-		perror("mmap");
+		perror("mmap"); // si falla la asignacion, se muestra un error
 		exit(EXIT_FAILURE);
 	}
 
@@ -69,24 +70,27 @@ int main() {
 	e->players = 20000;
 
 	// Inicializar semáforos
+	// el segundo parametro en 1 indica que el semaforo es compartido entre procesos
 	sem_init(&e->semaforo, 1, 1);
 
+	// se captura el tiempo antes de iniciar las ventas
 	struct timespec t_inicio, t_fin;
 	clock_gettime(CLOCK_MONOTONIC, &t_inicio);
 
+	// se imprime mensaje inicial de bienvenida
 	printf("\n************ CONCIERTO DON MEDARDO Y SUS PLAYERS ************\n");
 	printf("\n*************** INICIO VENTA ENTRADAS: 0.000000 ***************\n");
 
 	//crea los procesos hijos que actuaran como cajeros
 	for (int i = 0; i < NUM_PROCESOS; i++) {
 		if (fork() == 0) { //codigo hijo
-			int ventas_por_zona[5] = {0, 0, 0, 0, 0};
+			int ventas_por_zona[5] = {0, 0, 0, 0, 0}; // contadores locales de ventas por zona
 			
 			//procesa un subconjunto de transacciones
 			for (int j = i; j < TOTAL_ENTRADAS; j += NUM_PROCESOS) {
-				int tipo = tipoTransaccion(j);
-				procesarTransaccion(e, tipo);
-				ventas_por_zona[tipo]++;
+				int tipo = tipoTransaccion(j); // se obtiene el tipo de boleto
+				procesarTransaccion(e, tipo); // se descuenta el boleto en memoria compartida
+				ventas_por_zona[tipo]++; // se actualiza el contador 
 			}
 
 			// muestra resumen de ventas del cajero
@@ -107,8 +111,8 @@ int main() {
 		wait(NULL);
 	}
 
-	clock_gettime(CLOCK_MONOTONIC, &t_fin);
-	double tiempo_total = (t_fin.tv_sec - t_inicio.tv_sec) + (t_fin.tv_nsec - t_inicio.tv_nsec) / 1e9;
+	clock_gettime(CLOCK_MONOTONIC, &t_fin); // se toma el tiempo final luego de que todos los boletos fueron vendidos
+	double tiempo_total = (t_fin.tv_sec - t_inicio.tv_sec) + (t_fin.tv_nsec - t_inicio.tv_nsec) / 1e9; //calculo del tiempo total
 
 	printf("\n*************** TODAS LAS ENTRADAS HAN SIDO VENDIDAS ***************\n");
 	printf("\n*************** FIN VENTA DE ENTRADAS: %.6f ***************\n", tiempo_total);
@@ -117,5 +121,5 @@ int main() {
 	sem_destroy(&e->semaforo);
 	munmap(e, sizeof(Entradas));
 
-	return 0;
+	return 0; //fin del programa
 }
