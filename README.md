@@ -1,4 +1,8 @@
-# **GRUPO B - PROYECTO BIMESTRE 1: Ejecución de múltiples tareas con procesos y con hilos.**
+<center>
+  <h1>
+    <strong>GRUPO B - PROYECTO BIMESTRE 1: Ejecución de múltiples tareas con procesos y con hilos.</strong>
+  </h1>
+</center>
 <p align="center">
   <a href="https://www.epn.edu.ec/">
     <img src="https://img.shields.io/badge/Escuela%20Polit%C3%A9cnica%20Nacional-blue?style=for-the-badge">
