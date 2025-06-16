@@ -78,7 +78,7 @@ void procesarTransaccion(Entradas *e, int tipo) {
 void *trabajoHilo(void *arg) {
 	DatosHilo *dato = (DatosHilo *)arg; // obtiene los datos del hilo
 	int id = dato->id;
-	Entradas *e = dato->e;
+	Entradas *e = dato->e; //obtiene el puntero a la estructura compartida
 
 	int ventas_por_zona[5] = {0, 0, 0, 0, 0}; // contador local de ventas
 
