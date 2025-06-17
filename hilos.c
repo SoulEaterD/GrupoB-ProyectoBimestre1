@@ -6,6 +6,7 @@
 #define TOTAL_ENTRADAS 300000  // cantidad total de entradas a vender
 #define NUM_HILOS 5            // numero de cajeros (hilos)
 
+
 //estructura de entradas
 typedef struct {
 	int tribuna; //entrada de tribuna
@@ -21,11 +22,17 @@ typedef struct {
 	pthread_mutex_t mutex_top;
 	pthread_mutex_t mutex_players;
 } Entradas;
+/*
+se hace el uso de multiples mutex debido a que al momento de bloquear uno de los hilos, los otros trataran de inicializarse, 
+para evitarlo, se bloquean a todos los hilos y se desbloquean en caso de que se los usen
+este uso evita una condicion de carrera
+*/
 
 typedef struct {
 	int id;        // identificador del cajero 
 	Entradas *e;   // puntero a la estructura compartida de entradas
 } DatosHilo;
+//esta estructura define el id del hilo
 
 int tipoTransaccion(int transaccion) {
 	// retorna un valor entre 0 y 4 segun el valor de la transaccion
@@ -35,6 +42,7 @@ int tipoTransaccion(int transaccion) {
 	else if(transaccion < 200000) return 3;   // retorno 3
 	else return 4;                            // retorno 4
 }
+//fragmenta las iteraciones totales a realizar entre los hilos
 
 void procesarTransaccion(Entradas *e, int tipo) {
 	switch(tipo) {
@@ -75,12 +83,15 @@ void procesarTransaccion(Entradas *e, int tipo) {
 	}
 }
 
+
+//esta funcion define las acciones que realizara cada hilo
 void *trabajoHilo(void *arg) {
 	DatosHilo *dato = (DatosHilo *)arg; // obtiene los datos del hilo
 	int id = dato->id;
 	Entradas *e = dato->e; //obtiene el puntero a la estructura compartida
 
 	int ventas_por_zona[5] = {0, 0, 0, 0, 0}; // contador local de ventas
+	//este arreglo diferencia los tipos de entrada que se usan
 
 	// cada hilo toma transacciones comenzando en su id y saltando de 5 en 5
 	for(int i = id; i < TOTAL_ENTRADAS; i += NUM_HILOS) {
@@ -100,6 +111,7 @@ void *trabajoHilo(void *arg) {
 	return NULL; // fin del hilo
 }
 
+
 int main() {
 	// inicializa estructura de entradas con cantidades iniciales
 	// cada zona tiene su mutex inicializado
@@ -108,11 +120,16 @@ int main() {
 		PTHREAD_MUTEX_INITIALIZER,
 		PTHREAD_MUTEX_INITIALIZER,
 		PTHREAD_MUTEX_INITIALIZER};
-
+	//define los valores que usaran los hilos y su respectivo orden
+	
 	pthread_t hilos[NUM_HILOS];     // arreglo de hilos
 	DatosHilo datos[NUM_HILOS];     // arreglo con los datos para cada hilo
 
+	//timespec define variables que almacenan tiempo	
 	struct timespec t_inicio, t_fin; // estructura para medir tiempo
+
+	//clock_gettiem define la forma en la que se calculara el tiempo
+	//en este caso CLOCK_MONOTONIC define el punto de analisis del tiempo, siendo este t_inicio
 	clock_gettime(CLOCK_MONOTONIC, &t_inicio); // marca el tiempo de inicio
 
 	// mensaje de bienvenida
@@ -124,22 +141,30 @@ int main() {
 		datos[i].id = i;
 		datos[i].e = &e;
 		pthread_create(&hilos[i], NULL, trabajoHilo, &datos[i]);
+		/*
+  		el primer parametro define el hilo que se creara
+    		el segundo parametro define los atributos predeterminados del hilo, en este caso se inicia desde el origen
+      		el tercer parametro define la funcion que realizara el hilo
+		el cuarto parametro define las entradas con las que trabajara el hilo
+  		*/
 	}
 
 	// espera a que todos los hilos terminen
 	for(int i = 0; i < NUM_HILOS; i++) {
 		pthread_join(hilos[i], NULL);
 	}
+	
 
 	// mide el tiempo de fin
 	clock_gettime(CLOCK_MONOTONIC, &t_fin);
 	double tiempo_total = (t_fin.tv_sec - t_inicio.tv_sec) + (t_fin.tv_nsec - t_inicio.tv_nsec) / 1e9;
-
+	//el calculo se realiza al obtener el tiempo inicial, sumado al tiempo final que se divide a 1e9 para obtener su valor en segundos
+	
 	// mensaje final de confirmacion
 	printf("\n*************** TODAS LAS ENTRADAS HAN SIDO VENDIDAS ***************\n");
 	printf("\n*************** FIN VENTA DE ENTRADAS: %.6f ***************\n", tiempo_total);
 
-	// libera los mutex 
+	// libera los mutex para evitar problemas de seguridad matando a los hilos
 	pthread_mutex_destroy(&e.mutex_tribuna);
 	pthread_mutex_destroy(&e.mutex_golden);
 	pthread_mutex_destroy(&e.mutex_vip);
