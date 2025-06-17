@@ -144,8 +144,8 @@ Players Box: 4000
 *************** FIN VENTA DE ENTRADAS: 0.026526 ***************
 ```
 <p>
-  Además, el tiempo total que tarda en ejecutarse el programa (ya sea en su versión con procesos o con hilos) se refleja en el mensaje final:
-  *************** FIN VENTA DE ENTRADAS: X.XXXXXX ***************
+  Además, el tiempo total que tarda en ejecutarse el programa se refleja en el mensaje final:
+  *************** FIN VENTA DE ENTRADAS: x.xxxxxx ***************
   Este valor representa el tiempo total, en segundos, que tomó el sistema en completar la venta de todas las entradas.
 </p>
 <p>Nota: En la salida se puede llegar a presentar un comportamiento de superposición debido a que los múltiples procesos e hilos están escribiendo al mismo tiempo en la consola.</p>
