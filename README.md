@@ -4,7 +4,6 @@
   </h1>
 </center>
 
-<p align="center">
   <a href="https://www.epn.edu.ec/">
     <img src="https://img.shields.io/badge/Escuela%20Polit%C3%A9cnica%20Nacional-blue?style=for-the-badge">
   </a>
@@ -14,7 +13,6 @@
   <a href="https://www.epn.edu.ec/">
     <img src="https://img.shields.io/badge/Software-darkgreen?style=for-the-badge">
   </a>
-</p>
 
 ***
 ### **Integrantes**
@@ -74,13 +72,76 @@ Ambas versiones emplean la función clock_gettime() con CLOCK_MONOTONIC para cal
 
 ## Compilación y Ejecución
 
-### Versión con Hilos
-gcc -pthread hilos.c -o hilos 
+### Requisitos del Sistema
+<ul>
+  <li>Sistema operativo tipo UNIX (Linux)</li>
+  <li>Compilador compatible con C (gcc)</li>
+</ul>
 
+### Comandos de compilación y ejecución
+En esta sección se detallan los comandos necesarios para la compilación y ejecución de cada una de las versiones del proyecto.
+Es importante asegurarse de ejecutar los comandos desde el mismo directorio donde se encuentran los archivos fuente (.c), ya que al compilar se generará un archivo ejecutable en dicho lugar.
+#### Versión con procesos
+Ejcutar los comandos en el orden que se muestra:
+```bash
+gcc procesosMMAP.c -o procesosMMAP
+```
+```bash
+./procesosMMAP
+```
+#### Versión con hilos
+Ejcutar los comandos en el orden que se muestra:
+```bash
+gcc -pthread hilos.c -o hilos
+```
+```bash
 ./hilos
+```
+#### Resultados de la ejecución
+En ambas versiones se espera obtener lo siguiente: 
+```bash
+************ CONCIERTO DON MEDARDO Y SUS PLAYERS ************
 
-### Versión con Procesos
-gcc -pthread procesosMMAP.c -o procesos 
+*************** INICIO VENTA ENTRADAS: 0.000000 ***************
 
-./procesos
+[Cajero: 5] Ventas por zona:
+Tribuna: 20000
+Golden Box: 20000
+VIP: 10000
+Top Box: 6000
+Players Box: 4000
 
+[Cajero: 3] Ventas por zona:
+Tribuna: 20000
+Golden Box: 20000
+VIP: 10000
+Top Box: 6000
+Players Box: 4000
+
+[Cajero: 1] Ventas por zona:
+Tribuna: 20000
+Golden Box: 20000
+VIP: 10000
+Top Box: 6000
+Players Box: 4000
+
+[Cajero: 2] Ventas por zona:
+Tribuna: 20000
+Golden Box: 20000
+VIP: 10000
+Top Box: 6000
+Players Box: 4000
+
+[Cajero: 4] Ventas por zona:
+Tribuna: 20000
+Golden Box: 20000
+VIP: 10000
+Top Box: 6000
+Players Box: 4000
+
+*************** TODAS LAS ENTRADAS HAN SIDO VENDIDAS ***************
+
+*************** FIN VENTA DE ENTRADAS: 0.026526 ***************
+```
+Donde el tiempo que se demoran los hilos/procesos en ejecutar el programa se ven represnetados por fin venta de entradas.
+Nota: En la salida se puede llegar a presentar un comportamiento de superposición debido debido aq ue los múltiples procesos e hilos están escribiendo al mismo tiempo en la consola.
