@@ -97,7 +97,7 @@ gcc -pthread hilos.c -o hilos
 ```bash
 ./hilos
 ```
-#### Resultados de la ejecución
+### Resultados de la ejecución
 En ambas versiones se espera obtener lo siguiente: 
 ```bash
 ************ CONCIERTO DON MEDARDO Y SUS PLAYERS ************
@@ -149,3 +149,26 @@ Players Box: 4000
   Este valor representa el tiempo total, en segundos, que tomó el sistema en completar la venta de todas las entradas.
 </p>
 <p>Nota: En la salida se puede llegar a presentar un comportamiento de superposición debido a que los múltiples procesos e hilos están escribiendo al mismo tiempo en la consola.</p>
+
+***
+### Conclusiones
+#### Comparación tiempos de ejecución
+<p>
+Se realizaron múltiples ejecuciones del sistema de venta de entradas usando tanto procesos como hilos. Los hilos obtuvieron consistentemente mejores tiempos de ejecución, debido a que comparten el mismo       espacio de memoria y requieren menos sobrecarga para la creación, gestión y sincronización. Al no necesitar mecanismos de comunicación interprocesos como memoria compartida y semáforos entre procesos, los hilos pueden operar con mayor eficiencia y menor latencia.
+</p>
+
+#### Diferencias encontradas
+<p>
+La principal diferencia radica en la forma en que los hilos y procesos gestionan el acceso compartido a los recursos. Los procesos requieren mecanismos de sincronización como semáforos en memoria compartida, mientras que los hilos utilizan mutexes para proteger secciones críticas. Los hilos comparten el mismo espacio de direcciones, lo que los hace más livianos y rápidos para acceder a memoria compartida, mientras que los procesos, al estar aislados, necesitan más infraestructura para sincronizarse correctamente.
+</p>
+
+#### Cuándo usar procesos o hilos
+<ul>
+  <li>Procesos: Son recomendables cuando se necesita aislamiento fuerte entre unidades de ejecución, por ejemplo, en casos donde una falla en una parte del sistema no debe afectar al resto.</li>
+  <li>Hilos: Son preferibles cuando se requiere alto rendimiento, bajo consumo de memoria y los hilos pueden compartir eficientemente datos.</li>
+</ul>
+
+#### Problemas de sincronización encontrados
+<p>
+Uno de los problemas más relevantes fue la condición de carrera al acceder simultáneamente a los contadores de entradas por zona. En la versión con procesos, se solucionó utilizando un único semáforo en memoria compartida, protegiendo el acceso a toda la estructura de entradas. En la versión con hilos, se implementó un mutex por zona, lo que permitió una mayor paralelización y mejor rendimiento.
+</p>
